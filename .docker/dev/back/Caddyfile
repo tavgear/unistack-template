@@ -1,0 +1,38 @@
+{
+        skip_install_trust
+
+        https_port {$HTTPS_PORT}
+        http_port {$HTTP_PORT}
+}
+
+{$SERVER_NAME}:{$HTTPS_PORT} {
+        encode
+
+        tls internal
+
+        @back {
+            path /_wdt/*
+            path /_profiler/*
+            path /_error/*
+            path /api/*
+        }
+
+        handle @back {
+                root public
+                php_server
+        }
+
+        handle {
+                reverse_proxy front:3000
+        }
+
+        #    route {
+        #        @static {
+        #            path /favicon.ico /robots.txt /sitemap.xml /manifest.json
+        #        }
+        #        file_server @static
+        #    }
+}
+
+import Caddyfile.d/*.caddyfile
+

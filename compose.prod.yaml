@@ -1,0 +1,13 @@
+name: ${PROJECT_NAME}-prod
+
+services:
+  front:
+    build:
+      args:
+        # Build-time API URL for production
+        NEXT_PUBLIC_API_URL: https://${DOMAIN}
+
+  db:
+    build:
+      # Custom Dockerfile for production DB (e.g., specific initializations)
+      dockerfile: ./.docker/prod/db/Dockerfile

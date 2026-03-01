@@ -1,0 +1,43 @@
+name: ${PROJECT_NAME}-dev
+
+services:
+
+  front:
+    build:
+      args:
+        UID: ${DEV_USER_ID}
+        UNAME: ${DEV_USER_NAME}
+    environment:
+      NEXT_PUBLIC_API_URL: https://${DOMAIN}
+    volumes:
+      # Hot-reloading for frontend
+      - ./front:/app
+
+  back:
+    build:
+      args:
+        UID: ${DEV_USER_ID}
+        UNAME: ${DEV_USER_NAME}
+    volumes:
+      # Development source mapping
+      - ./back:/app
+    configs:
+      - source: back-caddy
+        target: /etc/frankenphp/Caddyfile
+      - source: back-php
+        target: /usr/local/etc/php/conf.d/php.ini
+
+  db:
+    image: mariadb:11.8
+    configs:
+      - source: db-config
+        target: /etc/mysql/conf.d/custom.cnf
+
+configs:
+  # Dev-specific configuration files
+  back-caddy:
+    file: .docker/dev/back/Caddyfile
+  back-php:
+    file: .docker/dev/back/php.ini
+  db-config:
+    file: .docker/dev/db/mariadb.cnf

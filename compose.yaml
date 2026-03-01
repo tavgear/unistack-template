@@ -1,0 +1,58 @@
+name: ${PROJECT_NAME}
+
+services:
+
+  # Frontend service (Next.js)
+  front:
+    build:
+      dockerfile: ./.docker/${MODE}/front/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: ${MODE_NODE_ENV}
+      NEXT_TELEMETRY_DISABLED: 1
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f -I http://$(hostname -i):3000/" ]
+      start_period: 7s
+
+  # Backend service (Symfony with FrankenPHP)
+  back:
+    build:
+      dockerfile: ./.docker/${MODE}/back/Dockerfile
+    depends_on:
+      front:
+        condition: service_healthy
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "${HTTP_PORT}:${HTTP_PORT}"
+      - "${HTTPS_PORT}:${HTTPS_PORT}"
+    environment:
+      SERVER_NAME: ${DOMAIN}
+      HTTPS_PORT: ${HTTPS_PORT}
+      HTTP_PORT: ${HTTP_PORT}
+      APP_ENV: ${MODE}
+      DEFAULT_URI: https://${DOMAIN}
+      DATABASE_URL: "${DB_DRIVER}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}?serverVersion=${DB_VERSION}&charset=${DB_CHARSET}"
+
+  # Database service (MariaDB)
+  db:
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  caddy_data:
+  caddy_config:
+  db_data:

@@ -1,0 +1,14 @@
+services:
+  # Use pre-built images from GitHub Container Registry
+  front:
+    image: ghcr.io/${GITHUB_USER_NAME}/${PROJECT_NAME}-front:latest
+    build: !reset null
+
+  back:
+    image: ghcr.io/${GITHUB_USER_NAME}/${PROJECT_NAME}-back:latest
+    build: !reset null
+
+  db:
+    image: ghcr.io/${GITHUB_USER_NAME}/${PROJECT_NAME}-db:latest
+    build: !reset null
+
