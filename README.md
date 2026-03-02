@@ -49,7 +49,7 @@ In your repository settings (**Settings -> Secrets and variables -> Actions**), 
    ```bash
    make init
    ```
-3. Create a `.env.local` file in the project root and specify basic variables (the same as on the server):
+3. Edit a `.env.local` file in the project root and specify basic variables (the same as on the server):
    - `PROJECT_NAME`
    - `GITHUB_USER_NAME`
    - *If necessary, add other local settings, overriding values from the main `.env`.*
