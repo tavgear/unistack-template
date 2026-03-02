@@ -42,7 +42,7 @@ In your repository settings (**Settings -> Secrets and variables -> Actions**), 
 ## 4. Local Development
 1. Clone the created repository to your local machine:
    ```bash
-   git clone https://github.com/<YOUR_GITHUB_LOGIN>/<PROJECT_NAME>
+   git clone git@github.com:<YOUR_GITHUB_LOGIN>/<PROJECT_NAME>.git
    cd <PROJECT_NAME>
    ```
 2. Initialize the project (download Symfony and Next.js skeletons):
