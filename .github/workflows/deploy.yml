@@ -104,7 +104,7 @@ jobs:
           username: ${{ secrets.DEV_USER }}
           key: ${{ secrets.DEV_SSH_KEY }}
           source: "compose.yaml,compose.deploy.yaml"
-          target: ${{ vars.APP_DIR }}
+          target: ${{ vars.PROJECT_DIR }}
 
       # Step 10: Pull new images and restart services on production
       - name: Deploy to production
@@ -114,7 +114,7 @@ jobs:
           username: ${{ secrets.DEV_USER }}
           key: ${{ secrets.DEV_SSH_KEY }}
           script: |
-            cd ${{ vars.APP_DIR }}
+            cd ${{ vars.PROJECT_DIR }}
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
             docker compose -f compose.yaml -f compose.deploy.yaml pull
             docker compose -f compose.yaml -f compose.deploy.yaml up -d --remove-orphans
